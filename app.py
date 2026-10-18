@@ -1155,13 +1155,13 @@ st.markdown(
 st.markdown(
     "Airline Delay Analysis Using Apache Spark  \n"
     "Built with Python, Apache Spark, Streamlit and Plotly  \n"
-    "BDA Lab Project",
+    ,
     text_alignment="center"
 )
 
 st.markdown(
     "<p style='text-align: center; color: #8D72C7;'>"
-    "Turning flight data into meaningful insights 💜"
+    "Turning flight data into meaningful insights."
     "</p>",
     unsafe_allow_html=True
 )
