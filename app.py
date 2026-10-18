@@ -1145,23 +1145,23 @@ else:
 # PROJECT FOOTER
 # ============================================================
 
+st.markdown("---")
+
 st.markdown(
-    """
-    <div style="margin-top: 45px; padding: 24px 10px; text-align: center; border-top: 1px solid #EAE5F0;">
-        <div style="color: #302344; font-size: 20px; font-weight: 700; margin-bottom: 8px;">
-            ✈️ SkyNest
-        </div>
+    "<h3 style='text-align: center; color: #302344;'>✈️ SkyNest</h3>",
+    unsafe_allow_html=True
+)
 
-        <div style="color: #777181; font-size: 13px; line-height: 1.8;">
-            Airline Delay Analysis Using Apache Spark<br>
-            Built with Python, Apache Spark, Streamlit and Plotly<br>
-            BDA Lab Project
-        </div>
+st.markdown(
+    "Airline Delay Analysis Using Apache Spark  \n"
+    "Built with Python, Apache Spark, Streamlit and Plotly  \n"
+    "BDA Lab Project",
+    text_alignment="center"
+)
 
-        <div style="color: #8D72C7; font-size: 12px; margin-top: 12px;">
-            Turning flight data into meaningful insights 💜
-        </div>
-    </div>
-    """,
+st.markdown(
+    "<p style='text-align: center; color: #8D72C7;'>"
+    "Turning flight data into meaningful insights 💜"
+    "</p>",
     unsafe_allow_html=True
 )
