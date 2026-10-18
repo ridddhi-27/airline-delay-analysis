@@ -92,11 +92,6 @@ st.markdown(
         opacity: 1 !important;
     }}
 
-    [data-testid="stSidebarCollapseButton"] {{
-        visibility: visible !important;
-        opacity: 1 !important;
-    }}
-
     [data-testid="stHeader"] {{
         background: transparent;
     }}
@@ -336,6 +331,7 @@ st.markdown(
             font-size: 24px;
         }}
     }}
+
     </style>
     """,
     unsafe_allow_html=True
@@ -387,8 +383,6 @@ def load_spark_csv(folder):
 airline_df = load_spark_csv("outputs/airline_results")
 airport_df = load_spark_csv("outputs/airport_results")
 monthly_df = load_spark_csv("outputs/monthly_results")
-
-
 # =========================================================
 # VALIDATE OUTPUT FILES
 # =========================================================
@@ -437,25 +431,37 @@ if missing_columns:
     st.error(
         "Missing airline columns: " + ", ".join(missing_columns)
     )
-    st.write("Available airline columns:", airline_df.columns.tolist())
+    st.write(
+        "Available airline columns:",
+        airline_df.columns.tolist()
+    )
     st.stop()
 
 
 if "delay_rate_percent" not in airport_df.columns:
     st.error("Airport output is missing delay_rate_percent.")
-    st.write("Available airport columns:", airport_df.columns.tolist())
+    st.write(
+        "Available airport columns:",
+        airport_df.columns.tolist()
+    )
     st.stop()
 
 
 if "delay_rate_percent" not in monthly_df.columns:
     st.error("Monthly output is missing delay_rate_percent.")
-    st.write("Available monthly columns:", monthly_df.columns.tolist())
+    st.write(
+        "Available monthly columns:",
+        monthly_df.columns.tolist()
+    )
     st.stop()
 
 
 if "year_month" not in monthly_df.columns:
     st.error("Monthly output is missing year_month.")
-    st.write("Available monthly columns:", monthly_df.columns.tolist())
+    st.write(
+        "Available monthly columns:",
+        monthly_df.columns.tolist()
+    )
     st.stop()
 
 
@@ -488,8 +494,8 @@ with st.sidebar:
 
     st.markdown(
         """
-<div class="sidebar-brand">✈ SkyNest</div>
-<div class="sidebar-subtitle">AVIATION ANALYTICS</div>
+        <div class="sidebar-brand">✈ SkyNest</div>
+        <div class="sidebar-subtitle">AVIATION ANALYTICS</div>
         """,
         unsafe_allow_html=True
     )
@@ -518,14 +524,14 @@ with st.sidebar:
 
     st.markdown(
         """
-<div class="sidebar-info">
-<b>Airline Delay Analysis</b><br><br>
-A data analytics project using Apache Spark to analyze flight delays
-and visualize patterns across airlines, airports, and time periods.
-<br><br>
-<b>Technology</b><br>
-Apache Spark · Python · Pandas · Plotly · Streamlit
-</div>
+        <div class="sidebar-info">
+        <b>Airline Delay Analysis</b><br><br>
+        A data analytics project using Apache Spark to analyze flight delays
+        and visualize patterns across airlines, airports, and time periods.
+        <br><br>
+        <b>Technology</b><br>
+        Apache Spark · Python · Pandas · Plotly · Streamlit
+        </div>
         """,
         unsafe_allow_html=True
     )
@@ -537,7 +543,6 @@ Apache Spark · Python · Pandas · Plotly · Streamlit
 
 # =========================================================
 # HERO BANNER
-# IMPORTANT: HTML TAGS START AT THE LEFT EDGE OF THE STRING
 # =========================================================
 
 st.markdown(
@@ -598,12 +603,12 @@ kpi1, kpi2, kpi3 = st.columns(3, gap="medium")
 with kpi1:
     st.markdown(
         f"""
-<div class="kpi-card card-lavender">
-<div class="kpi-icon">✈️</div>
-<div class="kpi-label">TOTAL FLIGHTS</div>
-<div class="kpi-value">{total_flights:,}</div>
-<div class="kpi-note">Flights included in the analysis</div>
-</div>
+        <div class="kpi-card card-lavender">
+        <div class="kpi-icon">✈️</div>
+        <div class="kpi-label">TOTAL FLIGHTS</div>
+        <div class="kpi-value">{total_flights:,}</div>
+        <div class="kpi-note">Flights included in the analysis</div>
+        </div>
         """,
         unsafe_allow_html=True
     )
@@ -612,12 +617,12 @@ with kpi1:
 with kpi2:
     st.markdown(
         f"""
-<div class="kpi-card card-blue">
-<div class="kpi-icon">⏱️</div>
-<div class="kpi-label">DELAYED FLIGHTS</div>
-<div class="kpi-value">{delayed_flights:,}</div>
-<div class="kpi-note">Departure delays of 15+ minutes</div>
-</div>
+        <div class="kpi-card card-blue">
+        <div class="kpi-icon">⏱️</div>
+        <div class="kpi-label">DELAYED FLIGHTS</div>
+        <div class="kpi-value">{delayed_flights:,}</div>
+        <div class="kpi-note">Departure delays of 15+ minutes</div>
+        </div>
         """,
         unsafe_allow_html=True
     )
@@ -626,12 +631,12 @@ with kpi2:
 with kpi3:
     st.markdown(
         f"""
-<div class="kpi-card card-mint">
-<div class="kpi-icon">📊</div>
-<div class="kpi-label">DEPARTURE DELAY RATE</div>
-<div class="kpi-value">{delay_rate:.2f}%</div>
-<div class="kpi-note">Delayed flights as a share of all flights</div>
-</div>
+        <div class="kpi-card card-mint">
+        <div class="kpi-icon">📊</div>
+        <div class="kpi-label">DEPARTURE DELAY RATE</div>
+        <div class="kpi-value">{delay_rate:.2f}%</div>
+        <div class="kpi-note">Delayed flights as a share of all flights</div>
+        </div>
         """,
         unsafe_allow_html=True
     )
@@ -669,113 +674,150 @@ with st.sidebar:
 filtered_airlines = airline_df[
     airline_df[airline_column].astype(str).isin(selected_airlines)
 ].copy()
-
-
-# =========================================================
-# AIRLINE AND AIRPORT CHARTS
-# =========================================================
+# ============================================================
+# AIRLINE PERFORMANCE AND AIRPORT INSIGHTS
+# ============================================================
 
 airline_section, airport_section = st.columns(2, gap="large")
 
 
-# =========================================================
+# ============================================================
 # AIRLINE PERFORMANCE
-# =========================================================
+# ============================================================
 
 with airline_section:
 
     st.markdown(
-        '<div class="section-heading">✈️ Airline Performance</div>',
-        unsafe_allow_html=True
-    )
-
-    st.markdown(
-        '<div class="section-description">'
-        'Compare departure delay rates across selected airlines.'
-        '</div>',
+        """
+        <div class="section-heading">
+            <h2>✈️ Airline Performance</h2>
+            <p>Compare departure delay rates across airlines.</p>
+        </div>
+        """,
         unsafe_allow_html=True
     )
 
     if filtered_airlines.empty:
 
-        st.info("Select airlines in the sidebar to view the chart.")
+        st.warning(
+            "No airline data is available for the selected filters."
+        )
 
     else:
 
-        filtered_airlines["delay_rate_percent"] = pd.to_numeric(
-            filtered_airlines["delay_rate_percent"],
+        airline_chart_df = filtered_airlines.copy()
+
+        airline_chart_df["delay_rate_percent"] = pd.to_numeric(
+            airline_chart_df["delay_rate_percent"],
             errors="coerce"
         )
 
-        filtered_airlines = filtered_airlines.dropna(
+        airline_chart_df["total_flights"] = pd.to_numeric(
+            airline_chart_df["total_flights"],
+            errors="coerce"
+        )
+
+        airline_chart_df["delayed_flights_15min_plus"] = pd.to_numeric(
+            airline_chart_df["delayed_flights_15min_plus"],
+            errors="coerce"
+        )
+
+        airline_chart_df = airline_chart_df.dropna(
             subset=["delay_rate_percent"]
         )
 
-        if filtered_airlines.empty:
+        airline_chart_df = airline_chart_df.sort_values(
+            "delay_rate_percent",
+            ascending=False
+        )
 
-            st.warning("No valid airline delay rates are available.")
+        if airline_chart_df.empty:
+
+            st.warning(
+                "There is no valid delay-rate data to display."
+            )
 
         else:
 
-            airline_plot_df = filtered_airlines.sort_values(
-                "delay_rate_percent",
-                ascending=False
-            )
-
-            airline_hover = [
-                col for col in [
-                    "total_flights",
-                    "delayed_flights_15min_plus"
-                ]
-                if col in airline_plot_df.columns
-            ]
-
             fig_airline = px.bar(
-                airline_plot_df,
+                airline_chart_df,
                 x=airline_column,
                 y="delay_rate_percent",
-                title="Departure Delay Rate by Airline",
-                labels={
-                    airline_column: "Airline",
-                    "delay_rate_percent": "Delay Rate (%)"
-                },
                 color="delay_rate_percent",
                 color_continuous_scale=[
                     "#DCD0F0",
                     "#B7A1DD",
                     "#8D72C7"
                 ],
-                hover_data=airline_hover
+                hover_data={
+                    "total_flights": True,
+                    "delayed_flights_15min_plus": True,
+                    "delay_rate_percent": ":.2f"
+                },
+                title="Departure Delay Rate by Airline",
+                labels={
+                    airline_column: "Airline",
+                    "delay_rate_percent": "Delay Rate (%)",
+                    "total_flights": "Total Flights",
+                    "delayed_flights_15min_plus": "Delayed Flights"
+                }
             )
 
             fig_airline.update_layout(
-                plot_bgcolor="white",
-                paper_bgcolor="white",
+                template="plotly_white",
+                paper_bgcolor="#FFFFFF",
+                plot_bgcolor="#FFFFFF",
                 font=dict(
-                    family="DM Sans, sans-serif",
-                    color=TEXT,
-                    size=11
+                    family="Arial",
+                    size=12,
+                    color="#302344"
                 ),
                 title=dict(
-                    font=dict(size=15, color=PLUM),
-                    x=0.03
+                    text="Departure Delay Rate by Airline",
+                    font=dict(
+                        size=17,
+                        color="#302344"
+                    ),
+                    x=0.02
                 ),
-                coloraxis_showscale=False,
-                margin=dict(l=15, r=15, t=60, b=20),
+                margin=dict(
+                    l=20,
+                    r=20,
+                    t=65,
+                    b=90
+                ),
                 xaxis=dict(
-                    showgrid=False,
+                    title=dict(
+                        text="Airline",
+                        font=dict(color="#302344")
+                    ),
+                    tickfont=dict(color="#302344"),
                     tickangle=-35,
-                    title=None
+                    showgrid=False,
+                    zeroline=False
                 ),
                 yaxis=dict(
-                    showgrid=True,
-                    gridcolor="#F0EDF4",
-                    title="Delay Rate (%)",
-                    ticksuffix="%"
+                    title=dict(
+                        text="Delay Rate (%)",
+                        font=dict(color="#302344")
+                    ),
+                    tickfont=dict(color="#302344"),
+                    ticksuffix="%",
+                    gridcolor="#EAE5F0",
+                    zeroline=False
+                ),
+                coloraxis_colorbar=dict(
+                    title=dict(
+                        text="Delay Rate",
+                        font=dict(color="#302344")
+                    ),
+                    tickfont=dict(color="#302344")
                 )
             )
 
-            fig_airline.update_traces(marker_line_width=0)
+            fig_airline.update_traces(
+                marker_line_width=0
+            )
 
             st.plotly_chart(
                 fig_airline,
@@ -783,29 +825,28 @@ with airline_section:
                 config={"displayModeBar": False}
             )
 
-    with st.expander("View airline data"):
-        st.dataframe(
-            filtered_airlines,
-            use_container_width=True,
-            hide_index=True
-        )
+            with st.expander("📋 View airline data"):
+
+                st.dataframe(
+                    airline_chart_df,
+                    use_container_width=True,
+                    hide_index=True
+                )
 
 
-# =========================================================
+# ============================================================
 # AIRPORT INSIGHTS
-# =========================================================
+# ============================================================
 
 with airport_section:
 
     st.markdown(
-        '<div class="section-heading">🛫 Airport Insights</div>',
-        unsafe_allow_html=True
-    )
-
-    st.markdown(
-        '<div class="section-description">'
-        'Identify airports with the highest departure delay rates.'
-        '</div>',
+        """
+        <div class="section-heading">
+            <h2>🛫 Airport Insights</h2>
+            <p>Identify airports with the highest departure delay rates.</p>
+        </div>
+        """,
         unsafe_allow_html=True
     )
 
@@ -822,90 +863,115 @@ with airport_section:
 
     airport_column = next(
         (
-            col for col in airport_candidates
-            if col in airport_df.columns
+            column
+            for column in airport_candidates
+            if column in airport_df.columns
         ),
         airport_df.columns[0]
     )
 
-    airport_plot_df = airport_df.copy()
+    airport_chart_df = airport_df.copy()
 
-    airport_plot_df["delay_rate_percent"] = pd.to_numeric(
-        airport_plot_df["delay_rate_percent"],
+    airport_chart_df["delay_rate_percent"] = pd.to_numeric(
+        airport_chart_df["delay_rate_percent"],
         errors="coerce"
     )
 
-    airport_plot_df = airport_plot_df.dropna(
-        subset=["delay_rate_percent", airport_column]
+    airport_chart_df = airport_chart_df.dropna(
+        subset=[
+            "delay_rate_percent",
+            airport_column
+        ]
     )
 
-    top_airports = (
-        airport_plot_df
-        .sort_values("delay_rate_percent", ascending=False)
-        .head(15)
-        .copy()
-    )
+    airport_chart_df = airport_chart_df.sort_values(
+        "delay_rate_percent",
+        ascending=False
+    ).head(15)
 
-    if top_airports.empty:
+    if airport_chart_df.empty:
 
-        st.warning("No valid airport delay data is available.")
+        st.warning(
+            "No valid airport delay-rate data is available."
+        )
 
     else:
 
-        airport_hover = [
-            col for col in [
-                "total_flights",
-                "delayed_flights_15min_plus"
-            ]
-            if col in top_airports.columns
-        ]
-
         fig_airport = px.bar(
-            top_airports,
+            airport_chart_df,
             x=airport_column,
             y="delay_rate_percent",
-            title="Top 15 Airports by Departure Delay Rate",
-            labels={
-                airport_column: "Origin Airport",
-                "delay_rate_percent": "Delay Rate (%)"
-            },
             color="delay_rate_percent",
             color_continuous_scale=[
                 "#D7E4F8",
                 "#A9C4ED",
                 "#7599D5"
             ],
-            hover_data=airport_hover
+            hover_data={
+                "delay_rate_percent": ":.2f"
+            },
+            title="Top 15 Airports by Departure Delay Rate",
+            labels={
+                airport_column: "Airport",
+                "delay_rate_percent": "Delay Rate (%)"
+            }
         )
 
         fig_airport.update_layout(
-            plot_bgcolor="white",
-            paper_bgcolor="white",
+            template="plotly_white",
+            paper_bgcolor="#FFFFFF",
+            plot_bgcolor="#FFFFFF",
             font=dict(
-                family="DM Sans, sans-serif",
-                color=TEXT,
-                size=11
+                family="Arial",
+                size=12,
+                color="#302344"
             ),
             title=dict(
-                font=dict(size=15, color=PLUM),
-                x=0.03
+                text="Top 15 Airports by Departure Delay Rate",
+                font=dict(
+                    size=17,
+                    color="#302344"
+                ),
+                x=0.02
             ),
-            coloraxis_showscale=False,
-            margin=dict(l=15, r=15, t=60, b=20),
+            margin=dict(
+                l=20,
+                r=20,
+                t=65,
+                b=90
+            ),
             xaxis=dict(
-                showgrid=False,
+                title=dict(
+                    text="Airport",
+                    font=dict(color="#302344")
+                ),
+                tickfont=dict(color="#302344"),
                 tickangle=-35,
-                title=None
+                showgrid=False,
+                zeroline=False
             ),
             yaxis=dict(
-                showgrid=True,
-                gridcolor="#F0EDF4",
-                title="Delay Rate (%)",
-                ticksuffix="%"
+                title=dict(
+                    text="Delay Rate (%)",
+                    font=dict(color="#302344")
+                ),
+                tickfont=dict(color="#302344"),
+                ticksuffix="%",
+                gridcolor="#EAE5F0",
+                zeroline=False
+            ),
+            coloraxis_colorbar=dict(
+                title=dict(
+                    text="Delay Rate",
+                    font=dict(color="#302344")
+                ),
+                tickfont=dict(color="#302344")
             )
         )
 
-        fig_airport.update_traces(marker_line_width=0)
+        fig_airport.update_traces(
+            marker_line_width=0
+        )
 
         st.plotly_chart(
             fig_airport,
@@ -913,145 +979,211 @@ with airport_section:
             config={"displayModeBar": False}
         )
 
-    with st.expander("View airport data"):
-        st.dataframe(
-            top_airports,
-            use_container_width=True,
-            hide_index=True
-        )
+        with st.expander("📋 View airport data"):
 
-
-# =========================================================
-# MONTHLY DELAY TRENDS
-# =========================================================
-
-st.markdown("<br>", unsafe_allow_html=True)
-
-st.markdown(
-    '<div class="section-heading">📅 Monthly Delay Trends</div>',
-    unsafe_allow_html=True
-)
-
-st.markdown(
-    '<div class="section-description">'
-    'Track how departure delay rates change over time.'
-    '</div>',
-    unsafe_allow_html=True
-)
-
-monthly_plot_df = monthly_df.copy()
-
-monthly_plot_df["delay_rate_percent"] = pd.to_numeric(
-    monthly_plot_df["delay_rate_percent"],
-    errors="coerce"
-)
-
-monthly_plot_df = monthly_plot_df.dropna(
-    subset=["year_month", "delay_rate_percent"]
-)
-
-monthly_plot_df["year_month"] = (
-    monthly_plot_df["year_month"].astype(str)
-)
-
-monthly_plot_df = monthly_plot_df.sort_values("year_month")
-
-
-if monthly_plot_df.empty:
-
-    st.warning("No valid monthly delay data is available.")
-
-else:
-
-    fig_monthly = px.line(
-        monthly_plot_df,
-        x="year_month",
-        y="delay_rate_percent",
-        markers=True,
-        title="Monthly Departure Delay Rate",
-        labels={
-            "year_month": "Month",
-            "delay_rate_percent": "Delay Rate (%)"
-        }
-    )
-
-    fig_monthly.update_traces(
-        line=dict(
-            color=PURPLE,
-            width=3
-        ),
-        marker=dict(
-            size=8,
-            color=PURPLE,
-            line=dict(
-                color="#FFFFFF",
-                width=2
+            st.dataframe(
+                airport_chart_df,
+                use_container_width=True,
+                hide_index=True
             )
-        ),
-        hovertemplate=(
-            "<b>Month:</b> %{x}<br>"
-            "<b>Delay Rate:</b> %{y:.2f}%"
-            "<extra></extra>"
-        )
-    )
+# ============================================================
+# MONTHLY DELAY TRENDS
+# ============================================================
 
-    fig_monthly.update_layout(
-        plot_bgcolor="white",
-        paper_bgcolor="white",
-        font=dict(
-            family="DM Sans, sans-serif",
-            color=TEXT,
-            size=12
-        ),
-        title=dict(
-            font=dict(size=16, color=PLUM),
-            x=0.02
-        ),
-        margin=dict(l=20, r=20, t=65, b=25),
-        showlegend=False,
-        xaxis=dict(
-            showgrid=False,
-            title="Month",
-            tickangle=-30
-        ),
-        yaxis=dict(
-            showgrid=True,
-            gridcolor="#F0EDF4",
-            title="Delay Rate (%)",
-            ticksuffix="%"
-        ),
-        hovermode="x unified"
-    )
-
-    st.plotly_chart(
-        fig_monthly,
-        use_container_width=True,
-        config={"displayModeBar": False}
-    )
-
-
-# =========================================================
-# MONTHLY DATA TABLE
-# =========================================================
-
-with st.expander("View monthly trend data"):
-    st.dataframe(
-        monthly_plot_df,
-        use_container_width=True,
-        hide_index=True
-    )
-
-
-# =========================================================
-# FOOTER
-# =========================================================
+st.markdown("---")
 
 st.markdown(
     """
-<div class="footer">
-SKYNEST · AIRLINE DELAY ANALYSIS<br>
-Built with Python, Apache Spark, Pandas, Plotly and Streamlit
-</div>
+    <div class="section-heading">
+        <h2>📈 Monthly Delay Trends</h2>
+        <p>Track how airline departure delays change over time.</p>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+if monthly_df.empty:
+
+    st.warning(
+        "Monthly results are unavailable. "
+        "Please check the outputs/monthly_results folder."
+    )
+
+else:
+
+    monthly_chart_df = monthly_df.copy()
+
+    monthly_chart_df["delay_rate_percent"] = pd.to_numeric(
+        monthly_chart_df["delay_rate_percent"],
+        errors="coerce"
+    )
+
+    monthly_chart_df = monthly_chart_df.dropna(
+        subset=["year_month", "delay_rate_percent"]
+    )
+
+    monthly_chart_df["year_month"] = (
+        monthly_chart_df["year_month"].astype(str)
+    )
+
+    monthly_chart_df = monthly_chart_df.sort_values(
+        "year_month"
+    )
+
+    if monthly_chart_df.empty:
+
+        st.warning(
+            "No valid monthly delay data is available to display."
+        )
+
+    else:
+
+        fig_monthly = px.line(
+            monthly_chart_df,
+            x="year_month",
+            y="delay_rate_percent",
+            markers=True,
+            color_discrete_sequence=["#8D72C7"],
+            hover_data={
+                "delay_rate_percent": ":.2f"
+            },
+            title="Monthly Departure Delay Rate",
+            labels={
+                "year_month": "Month",
+                "delay_rate_percent": "Delay Rate (%)"
+            }
+        )
+
+        fig_monthly.update_traces(
+            line=dict(
+                width=3,
+                color="#8D72C7"
+            ),
+            marker=dict(
+                size=8,
+                color="#8D72C7",
+                line=dict(
+                    width=1,
+                    color="#FFFFFF"
+                )
+            ),
+            hovertemplate=(
+                "<b>Month:</b> %{x}<br>"
+                "<b>Delay Rate:</b> %{y:.2f}%"
+                "<extra></extra>"
+            )
+        )
+
+        # Explicit dark-plum formatting for all chart text
+        fig_monthly.update_layout(
+            template="plotly_white",
+            paper_bgcolor="#FFFFFF",
+            plot_bgcolor="#FFFFFF",
+            font=dict(
+                family="Arial",
+                size=12,
+                color="#302344"
+            ),
+            title=dict(
+                text="Monthly Departure Delay Rate",
+                font=dict(
+                    size=18,
+                    color="#302344"
+                ),
+                x=0.02
+            ),
+            margin=dict(
+                l=25,
+                r=25,
+                t=65,
+                b=45
+            ),
+            hoverlabel=dict(
+                bgcolor="#FFFFFF",
+                font=dict(
+                    color="#302344"
+                ),
+                bordercolor="#EAE5F0"
+            ),
+            xaxis=dict(
+                title=dict(
+                    text="Month",
+                    font=dict(color="#302344")
+                ),
+                tickfont=dict(color="#302344"),
+                showgrid=False,
+                zeroline=False,
+                automargin=True
+            ),
+            yaxis=dict(
+                title=dict(
+                    text="Delay Rate (%)",
+                    font=dict(color="#302344")
+                ),
+                tickfont=dict(color="#302344"),
+                ticksuffix="%",
+                gridcolor="#EAE5F0",
+                zeroline=False
+            )
+        )
+
+        st.plotly_chart(
+            fig_monthly,
+            use_container_width=True,
+            config={"displayModeBar": False}
+        )
+
+        # Monthly data table
+        with st.expander("📋 View monthly data"):
+
+            st.dataframe(
+                monthly_chart_df,
+                use_container_width=True,
+                hide_index=True
+            )
+
+
+# ============================================================
+# PROJECT FOOTER
+# ============================================================
+
+st.markdown(
+    """
+    <div style="
+        margin-top: 45px;
+        padding: 24px 10px;
+        text-align: center;
+        border-top: 1px solid #EAE5F0;
+    ">
+        <div style="
+            color: #302344;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        ">
+            ✈️ SkyNest
+        </div>
+
+        <div style="
+            color: #777181;
+            font-size: 13px;
+            line-height: 1.8;
+        ">
+            Airline Delay Analysis Using Apache Spark
+            <br>
+            Built with Python, Apache Spark, Streamlit and Plotly
+            <br>
+            BDA Lab Project
+        </div>
+
+        <div style="
+            color: #8D72C7;
+            font-size: 12px;
+            margin-top: 12px;
+        ">
+            Turning flight data into meaningful insights 💜
+        </div>
+    </div>
     """,
     unsafe_allow_html=True
 )
